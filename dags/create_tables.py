@@ -1,11 +1,14 @@
 import datetime
 from airflow import DAG
-from airflow.hooks.postgres_hook import PostgresHook
-from airflow.operators import PostgresOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+# from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+# from airflow.operators import PostgresOperator
 
 dag = DAG(
     'Create_Redshift_Tables',
-    start_date=datetime.datetime.now()
+    start_date=datetime.datetime.now(),
+    tags=['sparkify']
 )
 
 create_tables_task = PostgresOperator(
