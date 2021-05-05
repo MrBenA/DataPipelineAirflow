@@ -1,5 +1,7 @@
-from airflow.contrib.hooks.aws_hook import AwsHook
-from airflow.hooks.postgres_hook import PostgresHook
+# from airflow.contrib.hooks.aws_hook import AwsHook
+from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
+# from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
@@ -34,16 +36,17 @@ class StageToRedshiftOperator(BaseOperator):
         self.table = table
 
     def execute(self, context):
-        #self.log.info('StageToRedshiftOperator not implemented yet')
-        
-        aws_hook = AwsHook(self.aws_credentials_id)
+        # self.log.info('StageToRedshiftOperator not implemented yet')
+
+        # for airflow 2 had to add <client_type="s3">
+        aws_hook = AwsBaseHook(self.aws_credentials_id, client_type="s3")
         credentials = aws_hook.get_credentials()
         
         self.log.info("Connecting to Redshift database")
         redshift = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         
         self.log.info("Clearing data from destination Redshift table")
-        redshift.run("TRUNCATE TABLE {}".format(self.table))
+        redshift.run("DELETE FROM {}".format(self.table))
         
         self.log.info("Copying data from S3 to Redshift")
         rendered_key = self.s3_key.format(**context)
