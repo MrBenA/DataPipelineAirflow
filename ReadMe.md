@@ -190,7 +190,7 @@ Within Sparkify's file storage, log files are partitioned by the month and year.
 
 ---
 
-### Table summary
+### Data Warehouse Table summary
 
 **Table Name**  | **Description**
 --------------- | ---------------
