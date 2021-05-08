@@ -38,7 +38,7 @@ In short, After installing Docker desktop, download the Docker-Compose [**yaml**
 
 Navigate your browser to **http://localhost:8080**, where you should be greeted with a log-in screen!<br>
 
-![Airflow Login](img/airflow-login.png)
+![Airflow Login](img/airflow-login.PNG)
 
 and if you have all project files in order, you should see the following DAGS, with no errors at the top of the page!<br>
 *(filtered by 'sparkify' tag)*
