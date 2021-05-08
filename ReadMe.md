@@ -81,7 +81,12 @@ Prior to running any DAGs, you'll need to create 2 connections to AWS services.
 *example Redshift connection*<br>
 ![Redshift Credentials](img/airflow-redshift_credentials.PNG)
 
-## Main DAG Overview
+## 'Create Redshift Tables' DAG overview
+
+A simple execute as required DAG to establish the required staging, fact and dimension tables on the Redshift cluster.
+A PostgresOperator executes an SQL file with DROP and CREATE TABLE statements.
+
+## Main ETL DAG Overview
 
 The DAG contains a default_args dictionary that sets the following rules:
 
@@ -118,4 +123,81 @@ This operator runs checks on the fact and each dimension table to confirm the ro
 *Working DAG with task dependencies set*
 ![DAG](img/example-dag.png)
 
+--- 
+## Dataset
+2No. datasets are available for ingest to the Redshift Sparkify data warehouse, required to carry out relevant<br>
+song play data analysis.
 
+    Song data: s3://udacity-dend/song_data
+    Log data: s3://udacity-dend/log_data
+
+### Song data
+Song data resides in JSON format, with each file containing metadata about a specific song, and the song's artist.<br>
+Within Sparkify's file storage, song files are partitioned by the first three letters of each song's track ID.
+
+Filepath example...
+
+    song_data/A/B/C/TRABCEI128F424C983.json
+    song_data/A/A/B/TRAABJL12903CDCF1A.json
+
+TRAABJL12903CDCF1A.json song file content...
+
+    {
+    "num_songs": 1,
+    "artist_id": "ARJIE2Y1187B994AB7",
+    "artist_latitude": null,
+    "artist_longitude": null,
+    "artist_location": "",
+    "artist_name": "Line Renaud",
+    "song_id": "SOUPIRU12A6D4FA1E1",
+    "title": "Der Kleine Dompfaff",
+    "duration": 152.92036,
+    "year": 0
+    }
+
+###  Log data
+User activity logs, collected via the Sparkify music streaming applications, also resides in JSON format.<br>
+Each file represents a single day and contains information about each user and their session details for that day.
+Within Sparkify's file storage, log files are partitioned by the month and year.
+
+    log_data/2018/11/2018-11-12-events.json
+    log_data/2018/11/2018-11-13-events.json
+
+2018-11-12-events.json log file content...
+
+    {
+    "artist":null,
+    "auth":"Logged In",
+    "firstName":"Celeste",
+    "gender":"F",
+    "itemInSession":0,
+    "lastName":"Williams",
+    "length":null,
+    "level":"free",
+    "location":"Klamath Falls, OR",
+    "method":"GET",
+    "page":"Home",
+    "registration":1541077528796.0,
+    "sessionId":438,
+    "song":null,
+    "status":200,
+    "ts":1541990217796,
+    "userAgent":"\"Mozilla\/5.0 (Windows NT 6.1; WOW64)<br>
+                AppleWebKit\/537.36 (KHTML, like Gecko)<br>
+                Chrome\/37.0.2062.103 Safari\/537.36\"",
+    "userId":"53"
+    }
+
+---
+
+### Table summary
+
+**Table Name**  | **Description**
+--------------- | ---------------
+**staging_events** | Staging Table; Full data extraction from JSON event log files.
+**staging_songs** | Staging Table; Full data extraction from JSON song files.
+**songplays** | Fact Table;  Log data associated with song plays, filtered by user action 'Next Song'.
+**users** | Dimension Table; Registered application users
+**songs** | Dimension Table; Songs in music database
+**artists** | Dimension Table; Artists in music database
+**time** | Dimension Table; Timestamps of **songplays** records, broken down into specific units
