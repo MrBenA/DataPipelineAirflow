@@ -45,7 +45,7 @@ file to your project directory and initialise the environment by running the fol
 
 Navigate your browser to **http://localhost:8080**, where you should be greeted with a log-in screen!<br>
 
-![Airflow Login](img/airflow-login.png)
+![Airflow Login](img/airflow-login.PNG)
 <!-- <img src="https://github.com/MrBenA/DataPipelineAirflow/blob/master/img/airflow-login.PNG?raw=true" width="50%"> -->
 
 
